@@ -1,0 +1,80 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/*
+ * In this class, we are reading from a provided file, printing the elements within, iterating through each value to determine whether or not 
+ * it has a specific vowel letter contained in it, if so remove it. At the end it prints the element that has each of the vowels within it.
+ */
+
+public class Elements<T> {
+
+    private LinkedList<T> contentsOfFile = new LinkedList<>();	
+
+    /*
+     * This is the method that is responsible for reading the file provided which allow access to print it and modify it  for the
+     * instructions
+     */
+    
+    public void readContentsOfFile(String filePath) {	//here is where the buffered reader is, and this will access the file provided
+        try (BufferedReader readFromFile = new BufferedReader(new FileReader(filePath))) {	//and obtain the contents within to print/perform
+            String line;																//instructions
+            while ((line = readFromFile.readLine()) != null) {
+            	contentsOfFile.add((T) line);	//this checks if a line of the file is empty (null)
+            }
+        } catch (IOException e) {	//error caught if line is found as NULL
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * This method here will print the original version of the txt file with all the elements in it
+     * return: after the original contents have been printed, it will remove the desired elements from the list based on vowel
+     */
+    
+    public void PrintOrgContent() {
+        System.out.println("Original list:\n");	//This is where the original list of content is displayed to the user before anything is removed
+        for (T element : contentsOfFile) {
+            System.out.println(element);	//contents of file are displayed here
+        }
+
+        String vowels = "aeiouy";	//these are the vowels which will determine what contents get removed for each section/iteration
+
+        for (int i = 0; i < vowels.length(); i++) {	//here is where the program will iterate through the file and will display a list
+            char vowel = vowels.charAt(i);			//based on the given set of vowels for each one. Each vowel will have its own list.
+            System.out.printf("\nProcessing %c\n", vowel);
+
+            List<T> tempRemovedContent = new LinkedList<>();	//here is where the "removed" content will be stored temporarily 
+            contentsOfFile.removeIf(element -> {			//in this variable set here
+                boolean Remove = !element.toString().toLowerCase().contains(String.valueOf(vowel));
+                if (Remove) {
+                    tempRemovedContent.add(element);
+                }
+                return Remove;
+            });
+
+            for (T removedVal : tempRemovedContent) {	//here is where the aftermath of processing each vowel is displayed, showing what
+                System.out.println("Removing " + removedVal);	//contents have been temporarily removed
+            }
+        }
+
+        System.out.println("\nElements which contain all of the vowels\n");	//here is where the values that contain all the specified
+        for (T element : contentsOfFile) {		//vowels are displayed, they were not removed as they contain all of them, and are
+            System.out.println(element);		//printed in their own sections
+        }
+    }
+
+    /*
+     * This is the main method that will call the 2 methods that print the original version of the file contents
+     * and calls the method that will take each vowel and iterate through the file and remove the items that do not contain it
+     */
+    
+    public static void main(String[] args) {
+        Elements<String> GLL = new Elements<>();
+        GLL.readContentsOfFile("C:\\Users\\peyto\\Downloads\\Elements.txt");	//this is the filename to which the 
+        GLL.PrintOrgContent();												//contents are contained in
+    }
+}
