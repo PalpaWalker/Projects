@@ -1,0 +1,78 @@
+#!/bin/bash
+#This program will calculate the final grade, and display a letter grade for a course based off
+#the numbers inputted by the user. It is a simple grade/course calculation tool.
+
+#this prompts the user to input marks for the various tests/assignments and will then set those numbers inputted as variables
+read -p "Enter assignment mark (0 to 40) : " assignment
+read -p "Enter Test1 mark (0 to 15) : " Test1
+read -p "Enter Test2 mark (0 to 15) : " Test2
+read -p "Final Exam mark (0 to 30) : " Exam
+
+#Here is where the grades inputted by the user will be set to the variable $grade (added together), as well the calculations for the grades will be done using a series of if/elif statements
+grade=$(($assignment+$Test1+$Test2+$Exam))
+
+#if grade is less than 50, F will be the letter value of that grade
+if [ $grade -lt 50 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is F"
+
+#if grade is greater than 50/less than 53 your letter grade is D-
+elif [ $grade -ge 50 ] && [ $grade -lt 53 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is D-"
+
+#if grade is greater than 53/less than 57 your letter grade is D
+elif [ $grade -ge 53 ] && [ $grade -lt 57 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is D"
+
+#if letter grade is greater than 57/less than 60 your letter grade is D+
+elif [ $grade  -ge 57 ] && [ $grade  -lt 60 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is D+"
+
+#if your final grade is greater than 60/less than 63 than your final letter grade is C-
+elif [ $grade -ge 60 ] && [ $grade  -lt 63 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is C-"
+
+#if your final grade is greater than 63/less than 67 than your final letter grade is C
+elif [ $grade -ge 63 ] && [ $grade  -lt 67 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is C"
+
+#if your final grade is greater than 67/less than 70 your final letter grade is C+
+elif [ $grade -ge 67 ] && [ $grade  -lt 70 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is C+"
+
+#if your final grade is greater than 70/less than 73 your final letter grade is B-
+elif [ $grade -ge 70 ] && [ $grade  -lt 73 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is B-"
+
+#if your final grade is greater than 73/less than 77 your final letter grade is B
+elif [ $grade -ge 73 ] && [ $grade  -lt 77 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is B"
+
+#if your final grade is greater than 77/less than 80 your final letter grade is B+
+elif [ $grade  -ge 77 ]  && [ $grade  -lt 80 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is B+"
+
+#if your final grade is greater than 80/less than 85 your final letter grade is A-
+elif [ $grade  -ge 80 ] && [ $grade  -lt 85 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is A-"
+
+#if your final grade is greater than 85/less than 90 your final letter grade is A
+elif [ $grade  -ge 85 ] && [ $grade  -lt 90 ] 
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is A"
+
+#if your final grade is greater than 90/less than 100 your final letter grade is A+
+elif [ $grade  -ge 90 ] && [ $grade  -lt 100 ]
+then
+        echo "Your final numeric grade is $grade, and your final letter grade is A+"
+fi #ends script
