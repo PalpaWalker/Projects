@@ -1,0 +1,39 @@
+; Purpose       To copy and reverse and array, while performing the following
+;               additional operations to decrypt the Secret Message. After
+;               reading in a value, we decrypt the value by
+;                a. dividing the value by 3
+;               b. then adding 32 to the value
+;               c. storing the value
+
+; Decryption Constants
+DIVISOR         equ     3       ; Value in supplied array will be divided by
+                                ; this value
+ADDED_VALUE     equ     32      ; Divided value will have 32 added to it
+
+                org     $1000
+Source_Array
+#include C:\68HCS12\Lib\A3B_Array.txt
+End_Source_Array
+                org        $1020                        ; Secret Message will appear
+                                                        ; starting here
+Destination_Array
+                ds      End_Source_Array-Source_Array   ; auto calculate Array Size
+End_Destination_Array
+
+                org     $2000
+                lds     #$2000                  ; Initialize Stack
+
+                ldx     #Source_Array           ; pointing to Source_Array
+                ldy     #End_Destination_Array  ; pointing to End_Destination_Array
+Loop            ldab    1,x+                    ; Load the value pointed to by x to register b which is Source_Array
+                pshx                            ; value of x will then be saved to the stack
+                ldx     #DIVISOR                ; calling the divisor constant (in address in register x)
+                idiv                            ; dividing integer in b by value defined by DIVISOR constant (3)
+                exg     x,b                     ; exchanging x and b values (i.e. remainder in b and result of division in x)
+                addb    #ADDED_VALUE            ; add the constant value to register b
+                pulx                            ; x is now pulled from the stack
+                stab    1,y-                    ; store the modified value in destination array
+                cpx     #End_Source_Array       ; compare if at the end of source array
+                bne     Loop                    ; if not, than branch to top of Loop
+
+                end
