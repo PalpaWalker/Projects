@@ -1,0 +1,290 @@
+DROP DATABASE IF EXISTS Assignment2; 
+
+CREATE DATABASE IF NOT EXISTS Assignment2; 
+
+  
+USE Assignment2;
+  
+
+DROP TABLE IF EXISTS student_data; 
+
+DROP TABLE IF EXISTS homeroom; 
+
+DROP TABLE IF EXISTS courses_enrolled; 
+
+DROP TABLE IF EXISTS disciplinary_actions; 
+
+DROP TABLE IF EXISTS post_highschool_plans; 
+
+DROP TABLE IF EXISTS extra_ciricular_activities; 
+
+DROP TABLE IF EXISTS standardized_testing_results; 
+
+DROP TABLE IF EXISTS legal_guardian_data; 
+
+DROP TABLE IF EXISTS student_data_has_legal_guardian_data; 
+
+  
+  -- creating student data table
+
+CREATE TABLE student_data (
+student_id INT(8),
+
+student_name VARCHAR(25),
+
+address VARCHAR(30) NOT NULL,
+
+birthdate DATE NOT NULL,
+
+academic_year YEAR NOT NULL,
+
+period_GPA INT(1) NOT NULL,
+
+year_GPA INT(1) NOT NULL,
+
+overall_GPA INT(1) NOT NULL,
+
+gender VARCHAR(10) NOT NULL,
+
+date_enrolled DATE NOT NULL,
+
+date_unenrolled DATE NOT NULL,
+
+CONSTRAINT student_data_PK PRIMARY KEY(student_id)
+);
+
+
+
+-- creating homeroom table
+
+CREATE TABLE homeroom (
+student_data_student_id INT(8),
+
+teacher_id INT(6),
+
+teacher VARCHAR(25),
+
+location VARCHAR(25) NOT NULL,
+
+academic_year YEAR NOT NULL,
+
+CONSTRAINT homeroom_PK PRIMARY KEY(teacher_id),
+CONSTRAINT homeroom_student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id )
+);
+
+
+
+-- creating courses enrolled table
+
+CREATE TABLE courses_enrolled (
+student_data_student_id INT(8),
+
+course_id INT(5),
+
+course_location VARCHAR(25),
+
+course_grade INT NOT NULL,
+
+CONSTRAINT courses_enrolled_PK PRIMARY KEY(course_id),
+CONSTRAINT courses_enrolled_student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id )
+);
+
+
+
+-- creating disiplinary actions table
+
+CREATE TABLE disciplinary_actions (
+student_data_student_id INT(8),
+
+case_id INT (7),
+
+incident_date DATETIME NOT NULL,
+
+incident_type VARCHAR(25) NOT NULL,
+
+action_taken VARCHAR(25) NULL,
+
+CONSTRAINT disciplinary_actions_PK PRIMARY KEY(case_id),
+CONSTRAINT disiplinary_actions_student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id )
+);
+
+
+-- creating post highschool plans table
+
+CREATE TABLE post_highschool_plans (
+student_data_student_id INT(8),
+
+plan_id INT(1),
+
+post_secondary_chosen VARCHAR(30),
+
+post_secondary_applied VARCHAR(30) NULL,
+
+application_date DATE NULL,
+
+application_result VARCHAR(10) NULL,
+
+CONSTRAINT post_highschool_plans_PK PRIMARY KEY(plan_id),
+CONSTRAINT post_highschool_plans_student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id )
+);
+
+
+-- creating extra ciricular activities table
+
+CREATE TABLE extra_ciricular_activities (
+student_data_student_id INT(8),
+
+activity_id INT(4),
+
+position_held VARCHAR(25),
+
+activity_name VARCHAR(25) NOT NULL,
+
+CONSTRAINT extra_ciricular_activities_PK PRIMARY KEY(activity_id),
+CONSTRAINT extra_ciricular_activities_student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id )
+);
+
+
+-- creating standardized testing result table
+
+CREATE TABLE standardized_testing_result (
+student_data_student_id INT(8),
+
+test_id INT(3),
+
+test_name VARCHAR(30),
+
+test_date DATE NOT NULL,
+
+test_result VARCHAR(10) NOT NULL,
+
+CONSTRAINT standardized_testing_result_PK PRIMARY KEY(test_id),
+CONSTRAINT standardized_testing_result_student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id )
+);
+
+
+-- creating legal guardian data table
+
+CREATE TABLE legal_guardian_data (
+guardian_id INT(2),
+
+home_phone INT,
+
+guardian_name VARCHAR(25) NOT NULL,
+
+address VARCHAR(30) NOT NULL,
+
+birthdate DATE NOT NULL,
+
+gender VARCHAR(10) NOT NULL,
+
+CONSTRAINT legal_guardian_data_PK PRIMARY KEY(guardian_id)
+);
+
+
+
+
+-- creating student data has legal guardian data table
+
+CREATE TABLE student_data_has_legal_guardian_data (
+student_data_student_id INT(8),
+legal_guardian_data_guardian_id INT(2),
+
+CONSTRAINT student_data_student_id_FK FOREIGN KEY( student_data_student_id ) REFERENCES student_data( student_id ),
+CONSTRAINT legal_guardian_data_guardian_id_FK FOREIGN KEY( legal_guardian_data_guardian_id ) REFERENCES legal_guardian_data( guardian_id )
+);
+
+
+-- eof
+
+
+
+
+
+
+Some queries to populate the tables:
+
+DELETE FROM student_data_has_legal_guardian_data;
+DELETE FROM legal_guardian_data;
+DELETE FROM standardized_testing_result;
+DELETE FROM extra_ciricular_activities;
+DELETE FROM post_highschool_plans;
+DELETE FROM disciplinary_actions;
+DELETE FROM courses_enrolled;
+DELETE FROM homeroom;
+DELETE FROM student_data;
+ 
+-- add student data
+INSERT INTO student_data(student_id, student_name, address, birthdate, academic_year, period_GPA, year_GPA, overall_GPA, gender, date_enrolled, date_unenrolled)
+VALUES( '11112222', 'Allen Wong', '1234 Woodroffe Ave', '1994-04-19',  2022, 4, 4, 4, 'M', '2018-09-01', '2022-11-25');
+INSERT INTO student_data(student_id, student_name, address, birthdate,  academic_year, period_GPA, year_GPA, overall_GPA, gender, date_enrolled, date_unenrolled)
+VALUES( '11113333', 'Jack Black', '420 Rock Rd', '1990-07-10', 2010, 1, 2, 1, 'M', '2010-09-01', '2014-05-30');
+INSERT INTO student_data(student_id, student_name, address, birthdate,  academic_year, period_GPA, year_GPA, overall_GPA, gender, date_enrolled, date_unenrolled)
+VALUES( '11114444', 'Sonic Hedgehog', '69 Green Hill Zone', '1986-10-10', 2020, 3, 3, 4, 'M', '2020-09-01', '2022-05-25');
+    
+-- add homeroom
+INSERT INTO homeroom(student_data_student_id, teacher_id, teacher, location, academic_year)
+VALUES( '11112222', '222345', 'Patoary', 'B Building', '2022');
+INSERT INTO homeroom(student_data_student_id, teacher_id, teacher, location, academic_year)
+VALUES( '11113333', '222346', 'ACDC', 'A Building', '2010');
+INSERT INTO homeroom(student_data_student_id, teacher_id, teacher, location, academic_year)
+    VALUES( '11114444', '222347', 'Eggman', 'S Building', '2020');
+    
+-- add courses enrolled
+INSERT INTO courses_enrolled(student_data_student_id, course_id, course_location, course_grade)
+VALUES( '11112222', '33311', 'B Building', '4');
+INSERT INTO courses_enrolled(student_data_student_id, course_id, course_location, course_grade)
+VALUES( '11113333', '33322', 'A Building', '2');
+INSERT INTO courses_enrolled(student_data_student_id, course_id, course_location, course_grade)
+VALUES( '11114444', '33344', 'S Building', '4');
+    
+-- add disciplinary actions
+INSERT INTO disciplinary_actions(student_data_student_id, case_id, incident_date, incident_type, action_taken)
+VALUES( '11112222', '7213456', '2022-09-01', 'negligible', 'none');
+INSERT INTO disciplinary_actions(student_data_student_id, case_id, incident_date, incident_type, action_taken)
+VALUES( '11113333', '7234123', '2011-07-03', 'loitering', 'none');
+INSERT INTO disciplinary_actions(student_data_student_id, case_id, incident_date, incident_type, action_taken)
+VALUES( '11114444', '7123987', '2021-10-31', 'speeding', 'fined');
+    
+-- add post highschool plans
+INSERT INTO post_highschool_plans(student_data_student_id, plan_id, post_secondary_chosen, post_secondary_applied, application_date, application_result)
+VALUES( '11112222', '1', 'Algonquin', 'Carleton', '2022-04-01', 'Accepted');
+INSERT INTO post_highschool_plans(student_data_student_id, plan_id, post_secondary_chosen, post_secondary_applied, application_date, application_result)
+VALUES( '11113333', '2', 'Algonquin', 'Queens', '2010-05-19', 'Accepted');
+INSERT INTO post_highschool_plans(student_data_student_id, plan_id, post_secondary_chosen, post_secondary_applied, application_date, application_result)
+VALUES( '11114444', '3', 'Algonquin', 'OttawaU', '2020-06-08', 'Accepted');
+    
+-- add extra curricular activities
+INSERT INTO extra_ciricular_activities(student_data_student_id, activity_id, position_held, activity_name)
+VALUES( '11112222', '4411', 'DPS', 'Esports');
+INSERT INTO extra_ciricular_activities(student_data_student_id, activity_id, position_held, activity_name)
+VALUES( '11113333', '4422', 'Lead', 'Band');
+INSERT INTO extra_ciricular_activities(student_data_student_id, activity_id, position_held, activity_name)
+VALUES( '11114444', '4433', 'Runner', 'Track');
+    
+-- add standardized testing result
+INSERT INTO standardized_testing_result(student_data_student_id, test_id, test_name, test_date, test_result)
+VALUES( '11112222', '555', 'Math', '2022-09-25', 'pass');
+INSERT INTO standardized_testing_result(student_data_student_id, test_id, test_name, test_date, test_result)
+VALUES( '11113333', '666', 'English', '2010-10-01', 'pass');
+INSERT INTO standardized_testing_result(student_data_student_id, test_id, test_name, test_date, test_result)
+VALUES( '11114444', '777', 'Physics', '202-11-04', 'fail');
+    
+-- add legal guardian data
+INSERT INTO legal_guardian_data(guardian_id, home_phone, guardian_name, address, birthdate, gender)
+VALUES( '88', '123456789', 'Cui Fang Huang', '1234 Woodroffe Ave', '1969-06-09', 'F');
+INSERT INTO legal_guardian_data(guardian_id, home_phone, guardian_name, address, birthdate, gender)
+VALUES( '89', '493213490', 'Mama Black', '420 Rock Rd', '1950-11-02', 'F');
+INSERT INTO legal_guardian_data(guardian_id, home_phone, guardian_name, address, birthdate, gender)
+VALUES( '90', '123945009', 'Eggman', '69 Green Hill Zone', '1942-02-18', 'M');
+    
+-- add student data has legal guardian data table
+INSERT INTO student_data_has_legal_guardian_data(student_data_student_id, legal_guardian_data_guardian_id)
+VALUES( '11112222', '88');
+INSERT INTO student_data_has_legal_guardian_data(student_data_student_id, legal_guardian_data_guardian_id)
+VALUES( '11113333', '89');
+INSERT INTO student_data_has_legal_guardian_data(student_data_student_id, legal_guardian_data_guardian_id)
+VALUES( '11114444', '90');
+ 
+ 
+-- eof
