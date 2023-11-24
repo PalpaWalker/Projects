@@ -1,0 +1,61 @@
+; Purpose       BCD Counter $00 - $15 (BCD) using Hex Displays
+;               and a single register, Accumulator A, for the count
+;               The range of counting can be altered by changing the
+;               FIRST_BCD and END_BCD constants
+;
+; ***** DO NOT CHANGE ANY CODE BETWEEN THESE MARKERS *****
+; Library Routines  - to be used in your solution
+;
+
+Config_Hex_Displays         equ        $2117
+Delay_Ms                    equ        $211F
+Hex_Display                 equ        $2139
+Extract_Msb                 equ        $2144
+Extract_Lsb                 equ        $2149
+
+; Program Constants - to be used in your solution
+STACK           equ     $2000
+                                ; Port P (PPT) Display Selection Values
+DIGIT3_PP0      equ     %1110   ; Left-most display MSB
+DIGIT2_PP1      equ     %1101   ; 2nd from left-most display LSB
+
+; Delay Subroutine Value  - to be used in your solution
+DVALUE  equ     #250            ; Delay value (base 10) 0 - 255 ms
+                                ; 125 = 1/8 second <- good for Dragon12 Board
+
+; ***** END OF DO NOT CHANGE ANY CODE BETWEEN THESE MARKERS *****
+
+; BCD Count constants  - to be used in your solution
+; Changing these values will change the Starting and End BCD counts
+
+FIRST_BCD        equ     $00     ; Starting BCD count
+END_BCD          equ     $15     ; Ending BCD count0
+
+        org     $2000
+Start   lds     #STACK          ; Initialize the Stack
+
+        jsr     Config_HEX_Displays ; Use the Hex Displays to display the count
+; Continually Count FIRST_BCD ... END_BCD ... FIRST_BCD ... END_BCD
+LoadStart ldaa    #FIRST_BCD    ; loading the starting BCD value (00)
+Loop    psha                    ; saving value on stack
+        jsr     Extract_Msb     ; library routine which will extract the MS BCD digit
+        ldab    #DIGIT3_PP0     ; left most display
+        jsr     Hex_Display     ; library routine which will display digit on hex displays
+        ldaa    #DVALUE         ; load the 250ms delay
+        jsr     Delay_ms        ; delaying the counter by the specified time
+        
+        ldaa    0,sp            ; reloading original value from stack, prevents losing track of count
+        jsr     Extract_Lsb     ; library routine which extracts the LS BCD digit
+        ldab    #DIGIT2_PP1     ; 2nd from the left display
+        jsr     Hex_Display     ; library routine which will display digit on hex displays
+        ldaa    #DVALUE         ; load the 250ms delay
+        jsr     Delay_ms        ; delaying the counter by the specified time
+        
+        pula                    ; restoring original value from stack
+        cmpa    #END_BCD        ; comparing value with the end value (15)
+        beq     LoadStart       ; if they are equal, branch to LoopStart
+        adda    #1              ; BCD value is incremented (A register)
+        daa                     ; adjust BCD
+        bra     Loop            ; count again
+
+        end
